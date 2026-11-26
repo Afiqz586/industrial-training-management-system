@@ -1,5 +1,8 @@
 <?php
 
+require 'dbconn.php';
+require 'notify.php';
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
