@@ -1,7 +1,7 @@
 <?php
 
-require 'dbconn.php';
-require 'notify.php';
+require_once __DIR__ . '/dbconn.php';
+require_once __DIR__ . '/notify.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -10,7 +10,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-include "dbconn.php";
+// only logged-in users can make changes
+if (!isset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role'])) {
+    header("Location: login.php");
+    exit;
+}
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'language.php';
 
 $allowedDepartments = [];
@@ -251,6 +256,7 @@ if (isset($_GET['delete_user'])) {
         }
         if (mysqli_stmt_affected_rows($stmt) > 0) {
             $_SESSION['toast_flash'] = 'record_deleted';
+            sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "deleted a user account");
         }
         header("Location: user.php");
         exit;
@@ -283,6 +289,9 @@ if (isset($_POST['update_leave'])) {
     mysqli_stmt_bind_param($stmt, "ssssi", $type, $start_date, $end_date, $remarks, $leave_mc_id);
 
     if (mysqli_stmt_execute($stmt)) {
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "updated a leave/MC record");
+        }
         header("Location: leave.php");
         exit;
     } else {
@@ -312,6 +321,7 @@ if (isset($_POST['add_leave'])) {
         $student_id, $type, $_POST['start_date'], $_POST['end_date'], $_POST['remarks']);
 
     if (mysqli_stmt_execute($stmt)) {
+        sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "added a leave/MC record");
         header("Location: leave.php");
         exit;
     } else {
@@ -332,6 +342,7 @@ if (isset($_GET['delete_leave'])) {
     if (mysqli_stmt_execute($stmt)) {
         if (mysqli_stmt_affected_rows($stmt) > 0) {
             $_SESSION['toast_flash'] = 'record_deleted';
+            sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "deleted a leave/MC record");
         }
         header("Location: leave.php");
         exit;
@@ -353,6 +364,7 @@ if (isset($_POST['add'])) {
 
     if (mysqli_stmt_execute($stmt)) {
         $_SESSION['toast_flash'] = 'student_added';
+        sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "added a new student");
         header("Location: students.php");
         exit;
     } else {
@@ -390,6 +402,9 @@ if (isset($_POST['update'])) {
         $_POST['start_date'], $_POST['end_date'], $_POST['status'], $photoPath, $studentId);
 
     if (mysqli_stmt_execute($stmt)) {
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "updated student details");
+        }
         if ($newPhotoPath !== null) {
             removeUploadedPhoto($currentStudent['photo'], 'student_photos');
         }
@@ -414,6 +429,7 @@ if (isset($_GET['delete'])) {
     if (mysqli_stmt_execute($stmt)) {
         if (mysqli_stmt_affected_rows($stmt) > 0) {
             $_SESSION['toast_flash'] = 'record_deleted';
+            sendCrossNotification($dbconn, $_SESSION['role'], $_SESSION['username'], "deleted a student record");
         }
         header("Location: students.php");
         exit;
