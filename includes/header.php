@@ -1,6 +1,8 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
+    require_once 'dbconn.php';
+    require_once 'notify.php';
 }
 
 if (isset($_POST['lang'])) {

@@ -159,6 +159,31 @@ section {
     overflow: hidden; 
 }
 
+.empty-msg {
+    color: gray;
+}
+
+.notif-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+
+.notif-item.unread {
+    background: #f0f8ff;
+}
+
+.notif-message {
+    font-size: 14px;
+}
+
+.notif-time {
+    color: gray;
+}
+
+.hidden {
+    display: none;
+}
 
 .drop-btn {
     display: flex;

@@ -75,7 +75,7 @@ if (notificationButton && notificationDropdown && notificationContainer) {
 if (clearBtn && notifList && notifBadge) {
     clearBtn.addEventListener("click", () => {
         clearBtn.disabled = true;
-        fetch("notificationAction.php", {
+        fetch("get_notification.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "mark_read" })
@@ -444,5 +444,5 @@ if (modals.length && openBtns.length) {
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") modals.forEach(closeModal);
     });
-// FIX: closing brace now sits right after the Esc listener (it used to be at the very bottom of the file)
+
 }
