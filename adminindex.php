@@ -99,7 +99,7 @@ $result = mysqli_stmt_get_result($stmt);
                 <h5><?= htmlspecialchars($L['total students']) ?></h5>
             </div>
         </div>
-        <a href="leave.php" class="view-all"><?= htmlspecialchars($L['view all']) ?><i class="fa-solid fa-arrow-right-long"></i></a>
+        <a href="activity.php" class="view-all"><?= htmlspecialchars($L['view all']) ?><i class="fa-solid fa-arrow-right-long"></i></a>
         <div class="table-list" id="studentList">
             <table border="1">
                 <thead>
